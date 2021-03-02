@@ -19,8 +19,13 @@ function Navbar() {
                     </a>
                 </div>
                 {login ? 
-                <div className="navbar-right">
-                    <ul className="nav navbar-nav me-auto mb-2 mb-lg-0">
+                <div className="navbar-nav">
+                    <ul className="nav mr-auto">
+                        <li className="nav-item">
+                            <a className="nav-link" href="/settings">
+                                Settings
+                            </a>
+                        </li>
                         <li className="nav-item">
                             <a className="nav-link" href="/logout">
                                 Logout

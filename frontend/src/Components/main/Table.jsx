@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 import {removeContact} from "../../main";
 
 const TableHeader = () => {
@@ -19,7 +19,7 @@ const TableHeader = () => {
 const TableBody = (props) => {
     return (
     <tr>
-        <td scope="row">{props.name}</td>
+        <td>{props.name}</td>
         <td>{props.surname}</td>
         <td>{props.phone}</td>
         <td>{props.email}</td>

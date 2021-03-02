@@ -5,11 +5,11 @@ import Axios from "axios";
  */
 
 async function removeContact(cid) {
-    const res = await Axios.delete("/api/removecontact" + cid, {
+    const res = await Axios.delete("/api/removecontact/" + cid, {
         headers: {
             Authorization: "Bearer " + localStorage.getItem("token")
         }
-    })
+    }).then(res => window.location.reload())
     return res;
 }
 

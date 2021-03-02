@@ -8,7 +8,7 @@ class Logout extends Component {
 
     render() {
         return (
-            <div className="container">
+            <div className="container" id="main">
                 <p>Logging you out...</p>
             </div>
         );

@@ -6,7 +6,7 @@ class Home extends Component {
     render() {
         
         return (
-            <div className='container'>
+            <div className='container' id="main">
                 <h1 style={{textAlign: 'center'}}>Welcome to the React - Flask - Phonebook</h1>
                 
                 <div>

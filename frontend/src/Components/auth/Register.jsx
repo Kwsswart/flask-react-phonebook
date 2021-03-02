@@ -53,7 +53,7 @@ class Register extends Component{
     render() {
         const {username, name, phone, email, pwd, rpwd} = this.state;
         return (
-            <div className="container">
+            <div className="container" id="main">
                 <div className="card text-center" style={{marginTop: "5%"}}>
                     <div className="card-header">
                         <h2>Register</h2>

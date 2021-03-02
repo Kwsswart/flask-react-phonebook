@@ -24,11 +24,12 @@ def addContact(name, surname, phone, email, company, uid):
 
 def removeContact(cid):
     """
-    Function intended to remove contacts pass req['_id']['$oid']
+    Function intended to remove contacts
     """
     if cid:
         try:
-            contacts = Contacts.objects(id=cid).first()
+            contacts = Contacts.objects.all()
+            contact = list(filter(lambda x: JSONEncoder().encode(x["id"]) == cid, contacts))[0]
             if not contact:
                 return False
             else:
@@ -47,8 +48,7 @@ def editContact(name, surname, phone, email, company, cid):
 
 def getContacts(username):
     """
-    Function intended to query database for all contacts based off uid.add()
-        ** pass unencoded uid
+    Function intended to query database for all contacts for user
     """
     user = Users.objects.get(username=username)
     contacts = Contacts.objects(uid=JSONEncoder().encode(user.id)).all()

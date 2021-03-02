@@ -50,7 +50,7 @@ def add_contact():
         return jsonify({"error": "Invalid Form"})
 
 
-@bp.route("/api/removecontact", methods=["DELETE"])
+@bp.route("/api/removecontact/<cid>", methods=["DELETE"])
 @jwt_required()
 def remove_contact(cid):
     try:

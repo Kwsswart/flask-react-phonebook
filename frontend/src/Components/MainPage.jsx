@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import Axios from "axios";
 import AddContact from "./main/AddContact";
+import Alert from "./error/Alert";
 import AdvancedSearch from "./main/AdvancedSearch";
 import Table from "./main/Table";
 import {check} from "../login";
@@ -51,12 +52,14 @@ class MainPage extends Component {
         const {contacts, err} = this.state;
 
         return (
-            <div className="container">
+            <div className="container" id="main">
                 <div className="card text-center" style={{marginTop: "5%"}}>
                     <div className="card-header">
                         <h2>Contacts</h2>
                     </div>
+
                     <div className="card-body">
+                        {err.length > 0 &&<Alert message={err} />}
                         <Table contacts={contacts}/>
                     </div>
                     <div className="card-footer text-muted"></div>

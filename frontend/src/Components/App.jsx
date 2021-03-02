@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from "./Home";
 import Navbar from "./display/Navbar";
 import MainPage from "./MainPage";
+import NotFound from "./error/NotFound";
+import UserSettings from "./UserSettings";
 import Footer from "./display/Footer";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
@@ -19,10 +21,14 @@ function App() {
         <Fragment>
             <Navbar />
             <Router>
-                <Route path="/" exact component={login ? MainPage : Home} />
-                <Route path="/login" exact component={Login} />
-                <Route path="/register" exact component={Register} />
-                <Route path="/logout" exact component={Logout} />
+                <Switch>
+                    <Route path="/" exact component={login ? MainPage : Home} />
+                    <Route path="/login" exact component={Login} />
+                    <Route path="/register" exact component={Register} />
+                    <Route path="/logout" exact component={Logout} />
+                    <Route path="/settings" exact component={UserSettings} />
+                    <Route component={NotFound} />
+                </Switch>
             </Router>
             <Footer />
         </Fragment>

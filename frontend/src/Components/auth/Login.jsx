@@ -34,7 +34,7 @@ class Login extends Component {
         const {username, pwd} = this.state;
 
         return (
-            <div className="container">
+            <div className="container" id="main">
                 <div className="card text-center" style={{marginTop: "5%"}}>
                     <div className="card-header">
                         <h2>Login</h2>
