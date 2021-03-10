@@ -42,9 +42,6 @@ def removeContact(cid):
         return False
 
 
-def editContact(name, surname, phone, email, company, cid):
-    pass
-
 
 def getContacts(username):
     """

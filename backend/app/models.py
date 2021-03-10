@@ -21,6 +21,14 @@ class Users(Document):
                 "phone": self.phone,
                 "email": self.email}
 
+    def __repr__(self):
+        return {
+                "_id": str(self.pk),
+                "username": self.name,
+                "name": self.surname,
+                "phone": self.phone,
+                "email": self.email}
+
 
 class Contacts(Document):
     """ Model for standard contact data """
@@ -39,7 +47,9 @@ class Contacts(Document):
                 "surname": self.surname,
                 "phone": self.phone,
                 "email": self.email,
-                "company": self.company}
+                "company": self.company,
+                "uid": self.uid}
+    
 
 
 class InvalidToken(Document):

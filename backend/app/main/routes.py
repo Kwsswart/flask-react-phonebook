@@ -35,7 +35,8 @@ def add_contact():
         if name and surname:
             contact = Contacts.objects.filter(Q(name=name) & Q(surname=surname)).first()
             if contact:
-                return jsonify({"error": "You already have a contact with that name"})
+                if contact.uid == get_jwt_identity():
+                    return jsonify({"error": "You already have a contact with that name"})
             if not re.match(r"[\w\._]{5,}@\w{3,}.\w{2,4}", email):
                 return jsonify({"error": "Invalid email"})
             if not validSpanishNumber(phone) and not validInternationalNumber(phone):

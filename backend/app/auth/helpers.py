@@ -1,6 +1,6 @@
 from app import db
 from app.helpers import JSONEncoder, is_jsonable
-from app.models import Users
+from app.models import Users, Contacts
 
 
 def getUsers():
@@ -37,22 +37,3 @@ def addUser(username, name, phone, email, pwd):
     else:
         return False
 
-
-def removeUser(user_id):
-    """
-    Function intended to remove users pass req['_id']['$oid']
-    """
-    #
-    if user_id:
-        try:
-            user = Users.objects(id=user_id).first()
-            if not user:
-                return False
-            else:
-                user.delete()
-                return True
-        except Exception as e:
-            print(e)
-            return False
-    else:
-        return False

@@ -1,8 +1,8 @@
 import re
-from app.models import Users, InvalidToken
+from app.models import Users, InvalidToken, Contacts
 from app.auth import bp
 from app.helpers import is_jsonable, JSONEncoder, validInternationalNumber, validSpanishNumber
-from app.auth.helpers import getUser, getUsers, addUser, removeUser
+from app.auth.helpers import getUser, getUsers, addUser
 from flask import jsonify, request
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, get_jwt, \
     jwt_required
@@ -105,3 +105,67 @@ def refresh_logout():
 def current_user():
     uid = get_jwt_identity()
     return jsonify(getUser(uid))
+
+
+@bp.route("/api/changepassword", methods=["POST"])
+@jwt_required()
+def change_password():
+    try:
+        u = current_user()
+        users = Users.objects.all()
+        user = list(filter(lambda x: (JSONEncoder().encode(x["id"]) == u.json["id"]), users))[0]
+        if not (request.json["pwd"] and request.json["npwd"] and request.json["rpwd"]):
+            return jsonify({"error":"Invalid Form"})
+        if not user.pwd == request.json["pwd"]:
+            return jsonify({"error": "Wrong Password"})
+        if not request.json["npwd"] == request.json["rpwd"]:
+            return jsonify({"error": "New Password needs to match Repeated Password"})
+        if request.json["pwd"] == request.json["npwd"]:
+            return jsonify({"error": "You cannot change to the same password"})
+        user.pwd = request.json["npwd"]
+        user.save()
+        return jsonify({"success":True})
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Invalid Form"})
+
+
+@bp.route("/api/deleteaccount", methods=["DELETE"])
+@jwt_required()
+def delete_account():
+    try:
+        u = current_user()
+        users = Users.objects.all()
+        user = list(filter(lambda x: (JSONEncoder().encode(x["id"]) == u.json["id"]), users))[0]
+        contacts = Contacts.objects.all()
+        for contact in contacts:
+            if contact.uid == get_jwt_identity():
+                contact.delete()
+        user.delete()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+@bp.route("/api/changedetails", methods=["POST"])
+@jwt_required()
+def change_details():
+    try:
+        u = current_user()
+        users = Users.objects.all()
+        user = list(filter(lambda x: (JSONEncoder().encode(x["id"]) == u.json["id"]), users))[0]
+
+        if not (request.json["pwd"] and request.json["email"] and request.json["phone"]):
+            return jsonify({"error":"Invalid Form"})
+        if not user.pwd == request.json["pwd"]:
+            return jsonify({"error": "Wrong Password"})
+        if not re.match(r"[\w\._]{5,}@\w{3,}.\w{2,4}", request.json["email"]):
+            return jsonify({"error": "Invalid email"})
+        if not validSpanishNumber(request.json["phone"]) and not validInternationalNumber(request.json["phone"]):
+            return jsonify({"error": "Invalid phone number - Please ensure in format of 'XXX XXX XXX' for spanish numbers (No country code required) or include country code for international numbers"})
+        user.email = request.json["email"]
+        user.phone = request.json["phone"]
+        user.save()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"error": str(e)})

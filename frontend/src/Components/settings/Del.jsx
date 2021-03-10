@@ -3,7 +3,6 @@ import React from "react";
 
 
 function Del(props) {
-
     function deleteAccount(e) {
         e.preventDefault();
         let x = window.confirm("Are you sure you want to delete your account?");
@@ -34,6 +33,7 @@ function Del(props) {
             <button 
                 type="button"
                 className="btn btn-light"
+                style={{marginTop: "1%"}}
                 onClick={() => props.handleState("main")}>
                 &laquo; Back
             </button>
