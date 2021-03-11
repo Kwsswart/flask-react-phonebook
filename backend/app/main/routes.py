@@ -4,6 +4,7 @@ from app.auth.routes import current_user
 from app.main import bp
 from app.main.helpers import getContact, getContacts, addContact, removeContact, searchContacts
 from app.models import Contacts, Users, InvalidToken
+from app.security import encpwd, checkpwd, enc, dec
 from app.helpers import JSONEncoder, validInternationalNumber, validSpanishNumber
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, get_jwt, \

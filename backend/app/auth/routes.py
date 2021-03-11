@@ -2,10 +2,12 @@ import re
 from app.models import Users, InvalidToken, Contacts
 from app.auth import bp
 from app.helpers import is_jsonable, JSONEncoder, validInternationalNumber, validSpanishNumber
+from app.security import encpwd, checkpwd, enc, dec
 from app.auth.helpers import getUser, getUsers, addUser
 from flask import jsonify, request
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, get_jwt, \
     jwt_required
+
 
 
 @bp.route("/api/login", methods=["POST"])
@@ -15,7 +17,7 @@ def login():
         pwd = request.json["pwd"]
 
         if pwd and username:
-            user = list(filter(lambda x: x["username"] == username and x["pwd"] == pwd, getUsers()))
+            user = list(filter(lambda x: x["username"] == username and checkpwd(pwd, x["pwd"]), getUsers()))
             if len(user) == 1:
                 token = create_access_token(identity=user[0]["id"])
                 refresh_token = create_refresh_token(identity=user[0]["id"])
@@ -36,14 +38,13 @@ def register():
         phone = request.json["phone"]
         email = request.json["email"]
         email = email.lower()
-        pwd = request.json["pwd"]
+        pwd = encpwd(request.json["pwd"])
         email = email.lower()
-
         users = getUsers()
 
         if len(list(filter(lambda x: x["username"] == username, users))) == 1 or \
-            len(list(filter(lambda x: x["email"] == email, users))) == 1 or \
-                len(list(filter(lambda x: x["phone"] == phone, users))) == 1:
+            len(list(filter(lambda x: dec(x["email"]) == email, users))) == 1 or \
+                len(list(filter(lambda x: dec(x["phone"]) == phone, users))) == 1:
             return jsonify({"error": "Username/phone/email is in use."})
 
         if not re.match(r"[\w\._]{5,}@\w{3,}.\w{2,4}", email):
@@ -113,16 +114,17 @@ def change_password():
     try:
         u = current_user()
         users = Users.objects.all()
+        pwd= request.json["pwd"]
         user = list(filter(lambda x: (JSONEncoder().encode(x["id"]) == u.json["id"]), users))[0]
         if not (request.json["pwd"] and request.json["npwd"] and request.json["rpwd"]):
             return jsonify({"error":"Invalid Form"})
-        if not user.pwd == request.json["pwd"]:
+        if not checkpwd(request.json["pwd"], user["pwd"]):
             return jsonify({"error": "Wrong Password"})
         if not request.json["npwd"] == request.json["rpwd"]:
             return jsonify({"error": "New Password needs to match Repeated Password"})
         if request.json["pwd"] == request.json["npwd"]:
             return jsonify({"error": "You cannot change to the same password"})
-        user.pwd = request.json["npwd"]
+        user.pwd = encpwd(request.json["npwd"])
         user.save()
         return jsonify({"success":True})
     except Exception as e:
@@ -157,14 +159,14 @@ def change_details():
 
         if not (request.json["pwd"] and request.json["email"] and request.json["phone"]):
             return jsonify({"error":"Invalid Form"})
-        if not user.pwd == request.json["pwd"]:
+        if not checkpwd(request.json["pwd"], user.pwd):
             return jsonify({"error": "Wrong Password"})
         if not re.match(r"[\w\._]{5,}@\w{3,}.\w{2,4}", request.json["email"]):
             return jsonify({"error": "Invalid email"})
         if not validSpanishNumber(request.json["phone"]) and not validInternationalNumber(request.json["phone"]):
             return jsonify({"error": "Invalid phone number - Please ensure in format of 'XXX XXX XXX' for spanish numbers (No country code required) or include country code for international numbers"})
-        user.email = request.json["email"]
-        user.phone = request.json["phone"]
+        user.email = enc(request.json["email"])
+        user.phone = enc(request.json["phone"])
         user.save()
         return jsonify({"success": True})
     except Exception as e:

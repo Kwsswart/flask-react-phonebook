@@ -2,6 +2,7 @@ import re
 from app import db
 from app.models import Users, Contacts
 from app.helpers import JSONEncoder, is_jsonable
+from app.security import encpwd, checkpwd, enc, dec
 from mongoengine.queryset.visitor import Q
 
 
@@ -12,7 +13,7 @@ def addContact(name, surname, phone, email, company, uid):
     """
     if name and surname:
         try:
-            contact = Contacts(name=name, surname=surname, phone=phone, email=email, company=company, uid=uid)
+            contact = Contacts(name=name, surname=surname, phone=enc(phone), email=enc(email), company=company, uid=uid)
             contact.save()
             return True
         except Exception as e:
@@ -49,7 +50,7 @@ def getContacts(username):
     """
     user = Users.objects.get(username=username)
     contacts = Contacts.objects(uid=JSONEncoder().encode(user.id)).all()
-    return [{"id": JSONEncoder().encode(i.id), "name": i.name, "surname": i.surname,"phone": i.phone, "email": i.email, "company": i.company} for i in contacts]
+    return [{"id": JSONEncoder().encode(i.id), "name": i.name, "surname": i.surname,"phone": dec(i.phone), "email": dec(i.email), "company": i.company} for i in contacts]
 
 
 def getContact(cid):
@@ -59,7 +60,7 @@ def getContact(cid):
 
     contacts = Contacts.objects.all()
     contact = list(filter(lambda x: JSONEncoder().encode(x["id"]) == cid, contacts))[0]
-    return {"id":  JSONEncoder().encode(contact.id), "name": contact.name, "surname": contact.surname, "phone": contact.phone, "email": contact.email, "company": contact.company}
+    return {"id":  JSONEncoder().encode(contact.id), "name": contact.name, "surname": contact.surname, "phone": dec(contact.phone), "email": dec(contact.email), "company": contact.company}
 
 
 def searchContacts(username, name, surname, phone, email, company):
@@ -80,11 +81,14 @@ def searchContacts(username, name, surname, phone, email, company):
     contacts = Contacts.objects.filter(
         Q(name=query_string['regex']['name']) | 
         Q(surname=query_string['regex']['surname']) | 
-        Q(phone=query_string['regex']['phone']) |
-        Q(email=query_string['regex']['email']) | 
         Q(company=query_string['regex']['company'])
         ).order_by('name')
+    '''
+        
+        Q(phone=query_string['regex']['phone']) |
+        Q(email=query_string['regex']['email']) | 
+    '''
     if contacts:
         contacts = list(filter(lambda x: x["uid"] == JSONEncoder().encode(user.id), contacts))
-    return [{"id": JSONEncoder().encode(i.id), "name": i.name, "surname": i.surname,"phone": i.phone, "email": i.email, "company": i.company} for i in contacts]
+    return [{"id": JSONEncoder().encode(i.id), "name": i.name, "surname": i.surname,"phone": dec(i.phone), "email": dec(i.email), "company": i.company} for i in contacts]
 

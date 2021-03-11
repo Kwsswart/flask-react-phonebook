@@ -1,6 +1,7 @@
 from app import db
 from app.helpers import JSONEncoder, is_jsonable
 from app.models import Users, Contacts
+from app.security import encpwd, checkpwd, enc, dec
 
 
 def getUsers():
@@ -28,7 +29,7 @@ def addUser(username, name, phone, email, pwd):
 
     if username and pwd and email and name and phone:
         try:
-            user = Users(username=username, name=name, phone=phone, email=email, pwd=pwd)
+            user = Users(username=username, name=name, phone=enc(phone), email=enc(email), pwd=pwd)
             user.save()
             return True
         except Exception as e:

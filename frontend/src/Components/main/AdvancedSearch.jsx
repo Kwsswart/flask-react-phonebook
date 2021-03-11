@@ -28,16 +28,16 @@ class AdvancedSearch extends Component {
     }, () => this.search());
     nameChange = this.handleChange('name');
     surnameChange = this.handleChange('surname');
-    phoneChange = this.handleChange('phone');
-    emailChange = this.handleChange('email');
+    //phoneChange = this.handleChange('phone');
+    //emailChange = this.handleChange('email');
     companyChange = this.handleChange('company');
 
     search = () => {
         Axios.post("/api/searchcontacts/" + this.state.username,{
             name: this.state.name,
             surname: this.state.surname,
-            phone: this.state.phone,
-            email: this.state.email,
+            phone: '', // need to implement in order to get advanced search working
+            email: '', // with the encoded emails
             company: this.state.company,
         },{
             headers: {
@@ -54,7 +54,7 @@ class AdvancedSearch extends Component {
     }
 
     render() {
-        const {name, surname, phone, email, company, err} = this.state;
+        const {name, surname, company, err} = this.state;
         return (
                 <div className="card text-center" style={{marginTop: "3%", marginleft:"2%", width:"50%"}}>
                     <div className="card-header">
@@ -75,7 +75,7 @@ class AdvancedSearch extends Component {
                                 value={surname}
                                 fieldId="surname"
                                 hasChanged={this.surnameChange} />
-                            <FormField  
+                            {/*<FormField  
                                 type="tel"
                                 label="Phone Number" 
                                 value={phone}
@@ -86,7 +86,7 @@ class AdvancedSearch extends Component {
                                 label="Email" 
                                 value={email}
                                 fieldId="email"
-                                hasChanged={this.emailChange} />
+                                hasChanged={this.emailChange} />*/}
                             <FormField  
                                 type="text"
                                 label="Company Name" 
