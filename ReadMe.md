@@ -8,7 +8,9 @@ You may see a hosted version of this application [here](https://flask-react-phon
 ## Technologies used:
 
 Python - Flask
+
 JavaScript - ReactJS
+
 MongoDB
 
 ## Project set-up:
