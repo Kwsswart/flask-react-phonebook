@@ -26,8 +26,9 @@ def login():
                 return jsonify({"error": "Invalid credentials"})
         else:
             return jsonfiy({"error": "Invalid form"})
-    except:
-        return jsonify({"error": "Invalid form"})
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Invalid Form"})
 
 
 @bp.route("/api/register", methods=["POST"])
@@ -57,7 +58,8 @@ def register():
             return jsonify({"success": True})
         else: 
             return jsonify({"error": "Invalid Form"})
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({"error": "Invalid Form"})
 
 

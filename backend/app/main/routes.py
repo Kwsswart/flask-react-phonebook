@@ -12,6 +12,15 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jw
 from mongoengine.queryset.visitor import Q
 
 
+@bp.route("/")
+def react_index():
+    return bp.send_static_file("index.html")
+
+
+@bp.route("/<a>")
+def react_route(a):
+    return bp.send_static_file("index.html")
+
 
 @jwt.token_in_blocklist_loader
 def check_if_blacklisted_token(data, decrypted):

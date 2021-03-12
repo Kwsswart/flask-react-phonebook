@@ -11,6 +11,7 @@ coverage
 # production
 build
 venv
+phonebook
 .env
 .flaskenv
 

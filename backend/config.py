@@ -13,6 +13,7 @@ class Config(object):
     JWT_BLACKLIST_TOKEN_CHECKS = ["access", "refresh"]
     MONGODB_SETTINGS = {
     'db': 'phonebook',
-    'host': 'localhost',
-    'port': 27017
+    'host': os.environ.get('MONGODB_HOST'),
+    'username': os.environ.get('MONGODB_USER'),
+    'password': os.environ.get('MONGODB_PASSWORD')
     }
